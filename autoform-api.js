@@ -348,7 +348,8 @@ AutoForm.getFormValues = function autoFormGetFormValues(formId, template, ss, ge
       getAutoValues: false,
       filter: filter,
       autoConvert: autoConvert,
-      trimStrings: trimStrings
+      trimStrings: trimStrings,
+      mutate: true
     });
 
     // Pass expanded doc through formToDoc hooks
@@ -372,7 +373,8 @@ AutoForm.getFormValues = function autoFormGetFormValues(formId, template, ss, ge
       getAutoValues: false,
       filter: filter,
       autoConvert: autoConvert,
-      trimStrings: trimStrings
+      trimStrings: trimStrings,
+      mutate: true
     });
 
     // Pass modifier through formToModifier hooks
@@ -1185,16 +1187,17 @@ AutoForm._validateFormDoc = function validateFormDoc(doc, isModifier, formId, ss
   // Validate
   // If `key` is provided, we validate that key/field only
   if (key) {
-    isValid = vc.validateOne(docForValidation, key, {
+    isValid = vc.validate(docForValidation, {
       modifier: isModifier,
-      extendedCustomContext: ec
+      extendedCustomContext: ec,
+      keys: [key]
     });
 
     // Add sticky error for this key if there is one
     var stickyError = AutoForm.templateInstanceForForm(formId)._stickyErrors[key];
     if (stickyError) {
       isValid = false;
-      vc.addInvalidKeys([
+      vc.addvalidationErrors([
         {name: key, type: stickyError.type, value: stickyError.value}
       ]);
     }
@@ -1211,7 +1214,7 @@ AutoForm._validateFormDoc = function validateFormDoc(doc, isModifier, formId, ss
       stickyErrors = _.map(stickyErrors, function (obj, k) {
         return {name: k, type: obj.type, value: obj.value};
       });
-      vc.addInvalidKeys(stickyErrors);
+      vc.addvalidationErrors(stickyErrors);
     }
 
     if (!isValid) {

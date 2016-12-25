@@ -177,7 +177,7 @@ Template.autoForm.events({
       // of the Error object before we call
       // onError hooks
       var ec = ss.namedContext(formId);
-      var ik = ec.invalidKeys(), error;
+      var ik = ec.validationErrors(), error;
       if (ik) {
         if (ik.length) {
           // We add `message` prop to the invalidKeys.
@@ -453,7 +453,7 @@ Template.autoForm.events({
 
     var vc = AutoForm.getValidationContext(formId);
     if (vc) {
-      vc.resetValidation();
+      vc.reset();
       // If simpleSchema is undefined, we haven't yet rendered the form, and therefore
       // there is no need to reset validation for it. No error need be thrown.
     }
